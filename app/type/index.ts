@@ -10,7 +10,7 @@ interface geoJsonPoint{
     coordinates:[number,number]
 }
 
-interface Itenant{
+export interface Itenant{
     _id?:string;
     name:string;
     slug:string;
@@ -18,7 +18,7 @@ interface Itenant{
     updatedAt:Date;
 }
 
-interface Ivehicle{
+export interface Ivehicle{
     _id?:string;
     tenantId:string; //to isolte multi-tenancy
     plateNumber:string;
@@ -29,7 +29,7 @@ interface Ivehicle{
     updatedAt:Date;
 }
 
-interface Idriver{
+export interface Idriver{
     _id?:string;
     tenantId:string; //to isolte multi-tenancy
     full_name:string;
@@ -42,7 +42,7 @@ interface Idriver{
    
 }
 
-interface Itrip{
+export interface Itrip{
     _id?:string;
     tenantId:string; //to isolte multi-tenancy
     driverId:string;
