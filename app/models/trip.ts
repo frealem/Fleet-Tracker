@@ -16,3 +16,5 @@ const tripSchema=new Schema<ItripDocument>(
 
     },{timestamps:true}
 )
+
+export const Trip:Model<ItripDocument>=mongoose.models.Trip || mongoose.model<ItripDocument>("Trip",tripSchema)
