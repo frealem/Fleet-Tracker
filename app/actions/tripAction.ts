@@ -5,8 +5,7 @@ import { connectToDatabase } from "@/lib/db"
 import { Trip } from "../models/trip"
 import { Driver } from "../models/driver"
 import { CreateTripInput,createTripSchema } from "@/lib/validations/trips"
-import { success } from "zod"
-import { error } from "console"
+import { Vehicle } from "../models/vehicle"
 
 
 
@@ -29,32 +28,50 @@ export async function createTripDispatch(input:CreateTripInput) {
    try {
     
     const tripCode=`Trip-${Math.floor(1000 + Math.random()*9000)}`
-    const[newTrip]=await Trip.create([
-        {
-            tenantId:validatedData.tenantId,
-            tripCode,
-            driverId:validatedData.driverId,
-            vehicleId:validatedData.vehicleId,
-            origin:{
-                address:validatedData.originAddress,
-                location:{type:'Point',coordinates:validatedData.originCoordinates}
-            },
-            destination:{
-                address:validatedData.destinationAddress,
-                location:{type:'Point',coordinates:validatedData.destinationCoordinates}
-            },
-            status:'DISPATCHED',
-            dispatchedAt:new Date(),
-        },
-        
-    ],{session});
+    const newTrip = new Trip({
+  tenantId: validatedData.tenantId,
+  tripCode,
+  driverId: validatedData.driverId,
+  vehicleId: validatedData.vehicleId,
+  origin: {
+    address: validatedData.originAddress,
+    location: { type: 'Point', coordinates: validatedData.originCoordinates },
+  },
+  destination: {
+    address: validatedData.destinationAddress,
+    location: { type: 'Point', coordinates: validatedData.destinationCoordinates },
+  },
+  status: 'DISPATCHED',
+  dispatchedAt: new Date(),
+});
 
-    // TO AUTOMATICALLY UPDATE DRIVER AND VEHICLE STATUS
+// Save document with active transaction session
+await newTrip.save({ session });
 
-    await Driver.findByIdAndUpdate(validatedData.driverId,{isAvailable:false},{session});
-    await Vehi.findByIdAndUpdate(validatedData.vehicleId,{status:'IN_TRANSIT'},{session})
+// Update related models(driver and vehicle) within the same transaction
+await Driver.findByIdAndUpdate(validatedData.driverId, { isAvailable: false }, { session });
+await Vehicle.findByIdAndUpdate(validatedData.vehicleId, { status: 'IN_TRANSIT' }, { session });
 
-   } catch (error) {
-    
+await session.commitTransaction();
+session.endSession();
+
+revalidatePath('/dispatch');
+
+return {
+  success: true,
+  tripId: newTrip._id.toString(),
+};
+
    }
+   catch (err) {
+   
+    await session.abortTransaction();
+    session.endSession();
+
+    console.error('Error creating trip:', err);
+    return {
+      success: false,
+      error: 'Failed to create trip',
+    };
+} 
 }

@@ -1,11 +1,15 @@
 import mongoose,{Model,Schema,Document} from "mongoose";
 import {Itrip} from "../type/index";
+import { types } from "util";
 
-export interface ItripDocument extends Omit<Itrip,"_id">,Document{}
+export interface ItripDocument extends Omit<Itrip,"_id">{
+    _id:mongoose.Types.ObjectId
+}
 
 const tripSchema=new Schema<ItripDocument>(
     {
-        tenantId:{type:String,required:true,trim:true},
+        
+        tenantId:{type:Schema.Types.ObjectId,required:true,trim:true},
         driverId:{type:String,required:true,trim:true},
         vehicleId:{type:String,required:true,trim:true},
         origin:{
