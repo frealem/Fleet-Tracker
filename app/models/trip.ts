@@ -2,8 +2,9 @@ import mongoose,{Model,Schema,Document} from "mongoose";
 import {Itrip} from "../type/index";
 import { types } from "util";
 
-export interface ItripDocument extends Omit<Itrip,"_id">{
-    _id:mongoose.Types.ObjectId
+export interface ItripDocument extends Omit<Itrip,"_id"|"tenantId">{
+    _id:mongoose.Types.ObjectId,
+    tenantId:mongoose.Types.ObjectId
 }
 
 const tripSchema=new Schema<ItripDocument>(

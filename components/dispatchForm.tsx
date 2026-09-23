@@ -6,7 +6,7 @@ import { createTripDispatch } from "@/app/actions/tripAction";
 interface DispatchFormProps {
     tenantId: string;
     drivers: { _id: string; full_name: string }[];
-    vehicles: { _id: string; plateNumber: string }[];
+    vehicles: { _id: string; plateNumber: string ; model:string}[];
 }
 
 export default function DispatchForm({tenantId,drivers,vehicles}:DispatchFormProps){

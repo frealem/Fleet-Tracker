@@ -11,11 +11,14 @@ export const revalidate=0;
 export default async function DispatchPage(){
     await connectToDatabase()
 
-    const tenant=await Tenant.findOne({slug:'logiexpress'});
+    let tenant=await Tenant.findOne({slug:'logiexpress'}).lean();
 
+    if (tenant) {
+    tenant = await Tenant.findOne({}).lean();
+  }
     if(!tenant){
-        return(<div>
-            No Tenant found please visit <code>/api/seeding</code>to populate test record </div>
+        return(<div className="p-8 text-center text-red-500 font-semibold">
+            No Tenant found please visit <code className="p-2 font-bold">/api/seeding</code>to populate test record </div>
         )
     }
 
@@ -24,7 +27,7 @@ export default async function DispatchPage(){
     const activeTrips = await Trip.find({ tenantId: tenant._id }).sort({ createdAt: -1 }).limit(5);
 
     return(
-        <main>
+        <main className="">
 <div>
     <header>
         <div>
@@ -39,7 +42,8 @@ export default async function DispatchPage(){
 <DispatchForm 
 tenantId={tenant._id.toString()}
 drivers={availableDrivers.map((d)=>({_id:d._id.toString(),full_name:d.full_name}))}
-vehicles={availableVehicles.map((v)=>({_id:v._id.toString(),name:`${v.model}(${v.plateNumber})`}))}/>
+vehicles={availableVehicles.map((v)=>({_id:v._id.toString(),plateNumber:v.plateNumber,model:v.model}))}
+/>
         </section>
 
         <section>
@@ -48,7 +52,7 @@ vehicles={availableVehicles.map((v)=>({_id:v._id.toString(),name:`${v.model}(${v
                 {activeTrips.map((trip)=>(
                     <div>
                         <div>
-                            <span>{trip.tripCode}</span>
+                            <span>{`Name : ${trip.model}`}</span>
                             <p>{trip.origin.address} &rarr; {trip.destination.address}</p>
                         </div>
                         <span>{trip.status}</span>

@@ -45,10 +45,8 @@ export async function createTripDispatch(input:CreateTripInput) {
   dispatchedAt: new Date(),
 });
 
-// Save document with active transaction session
 await newTrip.save({ session });
 
-// Update related models(driver and vehicle) within the same transaction
 await Driver.findByIdAndUpdate(validatedData.driverId, { isAvailable: false }, { session });
 await Vehicle.findByIdAndUpdate(validatedData.vehicleId, { status: 'IN_TRANSIT' }, { session });
 

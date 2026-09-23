@@ -10,9 +10,11 @@ export async function GET(){
 await connectToDatabase();
 
 // clear existing mock data
+
 await Trip.deleteMany({});
 await Driver.deleteMany({});
 await Vehicle.deleteMany({});
+await Tenant.deleteMany({})
 
 // create tenant for seeding
 const tenant=await Tenant.create({
