@@ -42,8 +42,8 @@ return(
         {/* to choose the driver */}
 
     <div>
-        <label>Select Driver</label>
-        <select>
+        <label className="block text-xs text-slate-400 mb-1">Select Driver</label>
+        <select name="driverId" className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-100">
             <option>Select Available Drivers</option>
            { drivers.map((d)=>(
             <option key={d._id} value={d._id}>{d.full_name}</option>
@@ -53,8 +53,8 @@ return(
 
     {/* to choose from vehicle */}
     <div>
-        <label>Select Vehicle</label>
-        <select>
+        <label className="block text-xs text-slate-400 mb-1">Select Vehicle</label>
+        <select name="vehicleId" className="w-full bg-slate-900 border-slate-700 rounded p-2 text-sm text-slate-100">
             <option>Select available vehicle ...</option>
             {
                 vehicles.map((v)=>(
@@ -66,17 +66,17 @@ return(
         </select>
     </div>
 
-    <div>
-        <label className="">Pick Up Origin Address</label>
-        <input name="originAddress" defaultValue="Bole Cargo Terminal ,Addis Ababa" required/>
+    <div className="">
+        <label className="block text-xs text-slate-400 mb-1">Pick Up Origin Address</label>
+        <input name="originAddress" defaultValue="Bole Cargo Terminal ,Addis Ababa" required className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-100"/>
     </div>
     
     <div>
-        <label>Destination Address</label>
-        <input name="destinationAddress" defaultValue="kaliti" required/>
+        <label className="block text-xs text-slate-400 mb-1">Destination Address</label>
+        <input name="destinationAddress" defaultValue="kaliti" required className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-100"/>
     </div>
-    <button type="submit">{loading ? 'Processing Dispatch':'Dispatch Vehicle Now'}</button>
-    {message && <p>{message}</p>}
+    <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-700 text-white text-sm font-semibold py-2.5 rounded transition duration-200">{loading ? 'Processing Dispatch':'Dispatch Vehicle Now'}</button>
+    {message && <p className="text-xs text-center font-medium mt-2 text-emerald-400">{message}</p>}
     </form>
 )
 }
