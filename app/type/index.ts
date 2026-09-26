@@ -47,6 +47,7 @@ export interface Itrip{
     tenantId:string; //to isolte multi-tenancy
     driverId:string;
     vehicleId:string;
+    tripCode:string;
     origin:{address:string,location:geoJsonPoint};
     destination:{address:string,location:geoJsonPoint};
     status:TripStatus;
