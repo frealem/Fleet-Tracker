@@ -45,6 +45,7 @@ const tripSchema = new Schema<ItripDocument>(
       index: true,
     },
     dispatchedAt: { type: Date, default: Date.now },
+    deliveredAt: {type:Date,default:Date.now},
   },
   { timestamps: true }
 );

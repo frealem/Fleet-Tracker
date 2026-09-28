@@ -1,17 +1,16 @@
 import { connectToDatabase } from "@/lib/db";
-// FIX: Use standard alias imports instead of ambiguous relative paths
 import { Tenant } from "@/app/models/tenant";
 import { Driver } from "@/app/models/driver";
 import { Trip } from "@/app/models/trip";
 import { Vehicle } from "@/app/models/vehicle";
 import DispatchForm from "@/components/dispatchForm";
+import CompleteTripButton from "@/components/completeTripButton";
 
 export const revalidate = 0;
 
 export default async function DispatchPage() {
   await connectToDatabase();
 
-  // FIX: Correct tenant lookup logic using !tenant fallback
   let tenant = await Tenant.findOne({ slug: "logiexpress" }).lean();
   if (!tenant) {
     tenant = await Tenant.findOne({}).lean();
@@ -27,7 +26,13 @@ export default async function DispatchPage() {
 
   const availableDrivers = await Driver.find({ tenantId: tenant._id, isAvailable: true }).lean();
   const availableVehicles = await Vehicle.find({ tenantId: tenant._id, status: "IDLE" }).lean();
-  const activeTrips = await Trip.find({ tenantId: tenant._id }).sort({ createdAt: -1 }).limit(5).lean();
+
+  const activeTrips = await Trip.find({ tenantId: tenant._id })
+    .populate("driverId", "fullName full_name")
+    .populate("vehicleId", "plateNumber model")
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .lean();
 
   return (
     <main className="min-h-screen bg-slate-900 text-slate-100 p-8">
@@ -39,7 +44,7 @@ export default async function DispatchPage() {
           </div>
           <a
             href="/api/seed"
-            className="bg-slate-800 hover:bg-slate-600 text-xs px-3 py-2 rounded text-slate-300 border border-slate-700"
+            className="bg-slate-800 hover:bg-slate-600 text-xs px-3 py-2 rounded text-slate-300 border border-slate-700 transition"
           >
             Reset Seed Data
           </a>
@@ -52,12 +57,12 @@ export default async function DispatchPage() {
               tenantId={tenant._id.toString()}
               drivers={availableDrivers.map((d: any) => ({
                 _id: d._id.toString(),
-                fullName: d.fullName || d.full_name,
+                fullName: d.fullName || d.full_name || "Unknown Driver",
               }))}
               vehicles={availableVehicles.map((v: any) => ({
                 _id: v._id.toString(),
-                plateNumber: v.plateNumber,
-                model: v.model,
+                plateNumber: v.plateNumber || "N/A",
+                model: v.model || "N/A",
               }))}
             />
           </section>
@@ -68,25 +73,42 @@ export default async function DispatchPage() {
               <p className="text-slate-500 text-sm">NO ACTIVE TRIP DISPATCHES</p>
             ) : (
               <div className="space-y-3">
-                {activeTrips.map((trip: any) => (
-                  <div
-                    key={trip._id.toString()}
-                    className="bg-slate-900/80 p-4 rounded-lg border border-slate-700/50 flex justify-between items-center"
-                  >
-                    <div>
-                      {/* FIX: trip.model does not exist on Trip; render tripCode or formatted ID */}
-                      <span className="text-sm font-mono bg-emerald-950 border border-emerald-800 text-emerald-300 px-2 py-1 rounded">
-                        {trip.tripCode || `Trip-${trip._id.toString().slice(-4)}`}
-                      </span>
-                      <p className="text-sm font-medium mt-1">
-                        {trip.origin.address} &rarr; {trip.destination.address}
-                      </p>
+                {activeTrips.map((trip: any) => {
+                  const driverName =
+                    trip.driverId?.fullName || trip.driverId?.full_name || "Unassigned";
+
+                  const vehicleDetails = trip.vehicleId
+                    ? `${trip.vehicleId.model} (${trip.vehicleId.plateNumber})`
+                    : "Unassigned";
+
+                  return (
+                    <div
+                      key={trip._id.toString()}
+                      className="bg-slate-900/80 p-4 rounded-lg border border-slate-700/50 flex justify-between items-center gap-4"
+                    >
+                      <div className="space-y-1">
+                        <span className="text-xs font-mono bg-emerald-950 border border-emerald-800 text-emerald-300 px-2 py-0.5 rounded">
+                          {trip.tripCode || `Trip-${trip._id.toString().slice(-4)}`}
+                        </span>
+
+                        <p className="text-sm font-medium text-slate-200">
+                          {trip.origin?.address || "Origin"} &rarr; {trip.destination?.address || "Destination"}
+                        </p>
+
+                        <p className="text-xs text-slate-400">
+                          <span className="text-slate-300">{driverName}</span> • {vehicleDetails}
+                        </p>
+                      </div>
+
+                      <div className="shrink-0">
+                        <CompleteTripButton
+                          tripId={trip._id.toString()}
+                          status={trip.status}
+                        />
+                      </div>
                     </div>
-                    <span className="text-xs font-bold text-sky-400 bg-sky-950/60 px-2.5 py-1 rounded-full border border-sky-800/50">
-                      {trip.status}
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </section>
