@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fast",
-  description: "a fast application by frealem",
+  title: "FleetPulse",
+  description: "Enterprise Multi-Tenant Fleet Management Platform",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
