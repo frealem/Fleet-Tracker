@@ -12,19 +12,19 @@ export function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
 
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-500/20 group-hover:bg-blue-500 transition-colors">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 group-hover:bg-emerald-500 transition-colors">
             <Truck className="h-5 w-5" />
           </div>
           <span className="text-xl font-bold tracking-tight text-white">
-            Fleet<span className="text-blue-500">Pulse</span>
+            Fleet<span className="text-emerald-500">Pulse</span>
           </span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-          <Link href="#features" className="hover:text-blue-400 transition-colors">Features</Link>
-          <Link href="#tracking" className="hover:text-blue-400 transition-colors">Live Tracking</Link>
-          <Link href="#dispatch" className="hover:text-blue-400 transition-colors">Geospatial Dispatch</Link>
-          <Link href="#analytics" className="hover:text-blue-400 transition-colors">Analytics</Link>
+          <Link href="#features" className="hover:text-emerald-400 transition-colors">Features</Link>
+          <Link href="#tracking" className="hover:text-emerald-400 transition-colors">Live Tracking</Link>
+          <Link href="#dispatch" className="hover:text-emerald-400 transition-colors">Geospatial Dispatch</Link>
+          <Link href="#analytics" className="hover:text-emerald-400 transition-colors">Analytics</Link>
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
@@ -36,7 +36,7 @@ export function Header() {
           </Link>
           <Link
             href="/demo"
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-blue-500 active:scale-[0.98] transition-all"
+            className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-emerald-500 active:scale-[0.98] transition-all"
           >
             <span>Request Demo</span>
             <ArrowRight className="h-4 w-4" />
@@ -64,7 +64,7 @@ export function Header() {
             <Link href="/login" className="w-full text-center text-slate-300 font-semibold py-2">
               Sign In
             </Link>
-            <Link href="/demo" className="w-full text-center bg-blue-600 text-white font-semibold py-2.5 rounded-lg">
+            <Link href="/demo" className="w-full text-center bg-emerald-600 text-white font-semibold py-2.5 rounded-lg">
               Request Demo
             </Link>
           </div>

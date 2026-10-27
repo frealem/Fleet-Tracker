@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Suspense } from "react";
+import { LoadingPulse } from "@/components/loadingUI";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +29,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <Header/>
-        {children}
+      <Suspense fallback={<LoadingPulse text="Initializing System..." />}>
+          <main className="flex-1">{children}</main>
+        </Suspense>
         <Footer/></body>
     </html>
   );
