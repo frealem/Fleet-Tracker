@@ -19,11 +19,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 
                 await connectToDatabase();
 
+                // Find user and explicitly select password (if select: false is set in schema)
                 const user = await User.findOne({ email: credentials.email }).select("+password");
                 if (!user) {
                     throw new Error("User not found in the database!");
                 }
 
+                // Compare submitted password with hashed password in database
                 const passwordValidity = await bcrypt.compare(
                     credentials.password as string, 
                     user.password
@@ -33,6 +35,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     throw new Error("Invalid password or email!");
                 }
 
+                // Return user object that gets stored in the JWT token
                 return {
                     id: user._id.toString(),
                     full_name: user.full_name,

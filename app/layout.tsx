@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { Suspense } from "react";
 import { LoadingPulse } from "@/components/loadingUI";
 
@@ -21,18 +19,21 @@ export const metadata: Metadata = {
   description: "Enterprise Multi-Tenant Fleet Management Platform",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <Header/>
-      <Suspense fallback={<LoadingPulse text="Initializing System..." />}>
-          <main className="flex-1">{children}</main>
+      <body className="min-h-full flex flex-col bg-slate-950 text-slate-100">
+        <Suspense fallback={<LoadingPulse text="Initializing System..." />}>
+          <main className="flex-1 flex flex-col">{children}</main>
         </Suspense>
-        <Footer/></body>
+      </body>
     </html>
   );
 }
