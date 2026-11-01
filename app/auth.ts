@@ -1,6 +1,7 @@
-import { connectToDatabase } from "@/lib/db";
+// app/auth.ts
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { connectToDatabase } from "@/lib/db";
 import { User } from "@/app/models/user";
 import bcrypt from "bcryptjs";
 
@@ -14,18 +15,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) {
-                    throw new Error("Email and password are not provided!");
+                    throw new Error("Email and password are required!");
                 }
+                
                 
                 await connectToDatabase();
 
-                // Find user and explicitly select password (if select: false is set in schema)
                 const user = await User.findOne({ email: credentials.email }).select("+password");
                 if (!user) {
-                    throw new Error("User not found in the database!");
+                    throw new Error("User not found!");
                 }
 
-                // Compare submitted password with hashed password in database
                 const passwordValidity = await bcrypt.compare(
                     credentials.password as string, 
                     user.password
@@ -35,7 +35,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     throw new Error("Invalid password or email!");
                 }
 
-                // Return user object that gets stored in the JWT token
                 return {
                     id: user._id.toString(),
                     full_name: user.full_name,
@@ -54,7 +53,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             }
             return token;
         },
-
         async session({ session, token }) {
             if (session.user) {
                 session.user.role = token.role as string;
@@ -68,5 +66,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     session: {
         strategy: 'jwt'
-    }
+    },
+    secret: process.env.AUTH_SECRET,
 });
